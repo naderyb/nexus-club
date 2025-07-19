@@ -4,7 +4,7 @@ import { FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="relative w-full top-1110 py-12 px-6 backdrop-blur-md text-white flex flex-col items-center text-center z-50 overflow-hidden">
+    <footer className="relative w-full top-1110 py-12 px-6  text-white flex flex-col items-center text-center z-50 overflow-hidden">
       {/* Logo */}
       <Image
         src="/logo-nexus.png"
@@ -21,7 +21,9 @@ export default function Footer() {
 
       {/* Bold Club Identity */}
       <p className="max-w-2xl text-gray-300 text-sm md:text-base mt-6 leading-relaxed px-4 font-light tracking-wide">
-        Nexus Club is more than just a club — it’s a community. Created by students for students. We’re based in Algiers, but our ideas break borders. If it’s futuristic, wild, and meaningful — it’s Nexus.
+        Nexus Club is more than just a club - it’s a community. Created by
+        students for students. We’re based in Algiers, but our ideas break
+        borders. If it’s futuristic, wild, and meaningful - it’s Nexus.
       </p>
 
       {/* Location */}
@@ -59,7 +61,8 @@ export default function Footer() {
 
       {/* Final Line */}
       <p className="text-sm text-gray-400 font-light tracking-wide mt-6">
-        © 2025 Nexus Club — Built with 🔥, driven by ⚡, fueled by 💡, made with ❤️.
+        © 2025 Nexus Club - Built with 🔥, driven by ⚡, fueled by 💡, made with
+        ❤️.
       </p>
     </footer>
   );

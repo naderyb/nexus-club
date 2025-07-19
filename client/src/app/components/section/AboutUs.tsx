@@ -1,58 +1,106 @@
 "use client";
 
 import { useState, useEffect, memo } from "react";
-import { motion } from "framer-motion";
+import { motion, cubicBezier } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import TeamCarousel from "../../../components/TeamCarousel"; // Ensure default import if TeamCarousel uses export default
 
 const mediaItems = [
   { type: "image", src: "/media/groupe2-itfc.jpeg" },
   { type: "image", src: "/media/heetch.jpeg" },
   { type: "image", src: "/media/heetch3.jpeg" },
+  { type: "image", src: "/media/2nd_expo-itfc.jpeg" },
+  { type: "image", src: "/media/workshop1.jpeg" },
+  { type: "image", src: "/media/tshirt-day.jpeg" },
 ];
 
-// Reusable animation helpers
+// ✅ Fixed: Use proper Framer Motion easing
 const fadeInUp = (delay = 0, y = 30, duration = 0.8) => ({
   initial: { opacity: 0, y },
   whileInView: { opacity: 1, y: 0 },
-  transition: { duration, delay, ease: "easeOut" },
+  viewport: { once: true },
+  transition: {
+    duration,
+    delay,
+    ease: cubicBezier(0.42, 0, 0.58, 1), // Use a valid Framer Motion easing array
+  },
 });
+
+type CarouselItem = {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+  objectFit: "cover" | "contain";
+  objectPosition: string;
+};
 
 function AboutSection() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
-  // Throttle mouse updates to reduce frequency
   useEffect(() => {
-    let animationFrameId: number;
-
     const handleMouseMove = (e: MouseEvent) => {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(() => {
-        setMousePosition({ x: e.clientX, y: e.clientY });
-      });
+      setMousePosition({ x: e.clientX, y: e.clientY });
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
+  useEffect(() => {
+    const getImageOrientation = (
+      src: string
+    ): Promise<"portrait" | "landscape"> =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          resolve(img.height > img.width ? "portrait" : "landscape");
+        };
+      });
+
+    const prepareItems = async () => {
+      const items: CarouselItem[] = await Promise.all(
+        mediaItems.map(async (item, idx) => {
+          const orientation = await getImageOrientation(item.src);
+          return {
+            id: `${idx + 1}`,
+            name: ``,
+            role: "",
+            image: item.src,
+            objectFit: orientation === "portrait" ? "contain" : "cover",
+            objectPosition: "center",
+          };
+        })
+      );
+      setCarouselItems(items);
+    };
+
+    prepareItems();
+  }, []);
+
   return (
-    <section className="relative min-h-screen overflow-hidden px-6 py-60 text-white">
-      {/* Gradient glowing title */}
-      <motion.div
-        {...fadeInUp(0, 20, 1)}
-        className="mx-auto mb-10 w-fit px-6 py-3 rounded-full border-2 border-transparent text-lg uppercase tracking-widest font-semibold"
+    <section className="relative min-h-screen overflow-hidden px-6 py-40 text-white z-10">
+      {/* Title */}
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 1,
+          delay: 0,
+          ease: [0.25, 0.1, 0.25, 1],
+        }}
+        className="mx-auto mb-4 w-fit text-4xl font-extrabold tracking-wide uppercase"
+        whileHover={{ rotateX: 5, rotateY: -5 }}
         style={{
-          fontSize: "2rem",
-          background: "linear-gradient(to right, #a7f3d0, #9333ea)",
-          backgroundClip: "text",
+          background: "linear-gradient(to right, #22d3ee, #c026d3)",
           WebkitBackgroundClip: "text",
           color: "transparent",
-          boxShadow: `
+          textShadow: `
             ${mousePosition.x / 210}px ${
             mousePosition.y / 210
           }px 60px rgba(0, 255, 255, 0.6),
@@ -64,48 +112,68 @@ function AboutSection() {
         }}
       >
         Who We Are?
-      </motion.div>
+      </motion.h2>
+
+      {/* Tagline */}
+      <motion.p
+        {...fadeInUp(0.1)}
+        className="text-center text-base text-cyan-300 font-light tracking-wide mb-6"
+      >
+        We believe creativity is the spark of every revolution.
+      </motion.p>
 
       {/* Description */}
       <motion.p
         {...fadeInUp(0.2)}
-        className="relative z-10 mx-auto mb-16 max-w-3xl text-center text-lg text-gray-300 md:text-xl"
+        className="relative z-10 mx-auto -mb-20 max-w-3xl text-center text-lg md:text-xl text-gray-300 leading-relaxed"
       >
         Nexus Club unites brilliant minds to explore creativity, code, and
         community. Our mission: spark ideas, build projects, and shape the
-        future — one innovative session at a time.
+        future - one innovative session at a time.
       </motion.p>
 
-      {/* Gallery Grid */}
-      <div className="relative z-10 columns-1 gap-4 space-y-4 px-4 sm:columns-2 lg:columns-3">
-        {mediaItems.map((item, idx) => (
-          <motion.div
-            key={idx}
-            {...fadeInUp(idx * 0.15, 40, 0.6)}
-            className="break-inside-avoid overflow-hidden rounded-xl shadow-xl"
-          >
-            <Image
-              src={item.src}
-              alt="Gallery image"
-              width={600}
-              height={400}
-              className="h-auto w-full object-cover"
-            />
-          </motion.div>
-        ))}
+      {/* Carousel */}
+      <motion.div {...fadeInUp(0.3)} className="z-10">
+        <TeamCarousel
+          members={carouselItems}
+          title=""
+          cardWidth={280}
+          cardHeight={380}
+          visibleCards={2}
+          showArrows={true}
+          showDots={false}
+          background="transparent"
+          grayscaleEffect={true}
+          autoPlay={2000}
+        />
+      </motion.div>
 
-        {/* Learn More Button */}
-          <Link href="/about">
-            <motion.a className="mt-6 ml-2 inline-flex items-center gap-2 rounded-full border border-cyan-400 px-6 py-2 text-sm font-semibold uppercase tracking-widest text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-lg">
-              Learn More
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </motion.a>
-          </Link>
-        
-      </div>
+      {/* Neon Blur Glow */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 0.15, scale: 1 }}
+        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+        className="absolute w-[600px] h-[600px] bg-gradient-to-r from-fuchsia-500 to-cyan-500 rounded-full blur-3xl -z-10 top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      />
+
+      {/* CTA Button */}
+      <motion.div {...fadeInUp(0.4)} className="mt-14 text-center">
+        <Link href="/about">
+          <motion.a
+            whileHover={{
+              scale: 1.08,
+              boxShadow: "0 0 25px #e879f9, 0 0 60px #9333ea",
+            }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-fuchsia-300 hover:bg-fuchsia-500 hover:text-white transition-all shadow-[0_0_20px_#e879f9]/30"
+          >
+            Learn More
+            <ArrowRight className="ml-1 w-5 h-5" />
+          </motion.a>
+        </Link>
+      </motion.div>
     </section>
   );
 }
 
 export default memo(AboutSection);
-

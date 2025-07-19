@@ -5,91 +5,74 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-// Reusable fade-in-up config
-const fadeInUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 1, ease: "easeOut", delay },
-});
-
 function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center bg-black px-6 py-12 text-center overflow-hidden">
-      <div className="mx-auto max-w-4xl px-4">
+    <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center text-white overflow-hidden z-0">
+      {/* Subtle Glow Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-purple-900/30 via-transparent to-black -z-10" />
+
+      {/* Content */}
+      <div className="mx-auto max-w-3xl px-4">
         {/* Logo */}
-        <motion.div {...fadeInUp(0)}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <Image
             src="/logo-nexus.png"
             alt="Nexus Club Logo"
-            width={500}
-            height={150}
-            className="mx-auto mb-6"
+            width={260}
+            height={80}
+            className="mx-auto mb-8"
             priority
           />
         </motion.div>
 
-        {/* Welcome Title */}
+        {/* Title */}
         <motion.h1
-          {...fadeInUp(0.1)}
-          className="text-4xl font-semibold text-white md:text-5xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1 }}
+          className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-500"
         >
-          Hello there, welcome to Nexus Club!
+          Welcome to Nexus Club
         </motion.h1>
 
         {/* Description */}
         <motion.p
-          {...fadeInUp(0.3)}
-          className="mt-4 text-lg font-light tracking-wide text-gray-400 md:text-xl"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="mt-4 text-lg text-gray-300 md:text-xl"
         >
-          A community of innovators and creators at the intersection of
-          technology, marketing, and design. Where we make sense from chaos.
+          A vibrant community of creators, developers, and designers pushing the boundaries of technology and imagination.
         </motion.p>
 
-        {/* Call to Action Button (kept as is) */}
+        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.6 }}
-          className="mt-8 flex justify-center"
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-10"
         >
-          <button className="button flex items-center justify-center px-6 py-2 bg-transparent border-2 border-teal-500 text-teal-500 rounded-full hover:bg-teal-500 hover:text-white transition-all duration-300">
+          <button className="group relative inline-flex items-center gap-2 px-6 py-3 border-2 border-cyan-400 text-cyan-300 font-semibold rounded-full hover:bg-cyan-400 hover:text-black transition-all duration-300 shadow-[0_0_15px_#22d3ee]">
             Join Us
-            <ArrowRight className="ml-2 w-5 h-5" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            <span className="absolute inset-0 rounded-full blur-md opacity-20 bg-gradient-to-r from-cyan-400 to-fuchsia-500 -z-10" />
           </button>
         </motion.div>
 
-        {/* Text under the button (kept as is) */}
+        {/* Subtext */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 1 }}
-          className="mt-6 text-xl font-medium text-teal-500"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="mt-6 text-sm text-teal-400"
         >
-          Join us to enhance your skills and make a difference!
+          Discover. Collaborate. Grow.
         </motion.p>
       </div>
-
-      {/* Background Overlay (Glowing Effect - kept as is) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        className="absolute w-[500px] h-[500px] bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full blur-3xl -z-10 top-[-250px] left-[-150px] opacity-15"
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.2, scale: 1 }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        className="absolute w-[600px] h-[600px] bg-gradient-to-r from-violet-500 to-blue-600 rounded-full blur-3xl -z-10 bottom-[-200px] right-[-100px] opacity-20"
-      />
     </section>
   );
 }
