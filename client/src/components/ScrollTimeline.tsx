@@ -3,6 +3,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
+export interface TimelineEvent {
+  id: string | number;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  year?: string | number;
+  icon?: React.ReactNode;
+}
+
 interface ScrollTimelineProps {
   events: TimelineEvent[];
   title?: string;
@@ -14,6 +23,7 @@ interface ScrollTimelineProps {
   darkMode?: boolean;
   perspective?: boolean;
   className?: string;
+  onCardClick?: (event: TimelineEvent) => void; // ✅ Add this
 }
 
 export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
@@ -25,6 +35,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
   connectorStyle = "circuit",
   cardEffect = "cyber",
   className = "",
+  onCardClick, // ✅ Grab this
 }) => {
   const [visibleItems, setVisibleItems] = useState<Set<string | number>>(new Set());
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -70,12 +81,8 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
   return (
     <div
       ref={timelineRef}
-      className={cn(
-        "w-full px-4 sm:px-6 max-w-6xl mx-auto relative",
-        className
-      )}
+      className={cn("w-full px-4 sm:px-6 max-w-6xl mx-auto relative", className)}
     >
-      {/* Background grid effect */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_24px,rgba(0,255,255,0.1)_25px,rgba(0,255,255,0.1)_26px,transparent_27px),linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px)] bg-[size:25px_25px]" />
       </div>
@@ -96,11 +103,9 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
       )}
 
       <div className="relative">
-        {/* Main timeline line */}
         <div className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-cyan-400/30 via-purple-500/30 to-cyan-400/30" />
         <div className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-transparent via-cyan-400 to-transparent animate-pulse opacity-50" />
 
-        {/* Circuit dots */}
         {connectorStyle === "circuit" && (
           <div className="absolute left-1/2 -translate-x-1/2 h-full">
             {events.map((_, index) => (
@@ -115,9 +120,12 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
 
         <div className="flex flex-col gap-10 sm:gap-12">
           {events.map((event, index) => {
-            const alignment = cardAlignment === "alternating"
-              ? index % 2 === 0 ? "left" : "right"
-              : cardAlignment;
+            const alignment =
+              cardAlignment === "alternating"
+                ? index % 2 === 0
+                  ? "left"
+                  : "right"
+                : cardAlignment;
 
             return (
               <div
@@ -131,7 +139,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
                 )}
               >
                 <div
-                  onClick={event.onClick}
+                  onClick={() => onCardClick?.(event)} // ✅ Use the passed handler here
                   className={cn(
                     "relative w-full sm:w-[320px] bg-gray-900/50 backdrop-blur-sm p-5 sm:p-6 rounded-xl border border-gray-800 cursor-pointer overflow-hidden",
                     "hover:border-cyan-400/50 hover:shadow-[0_0_20px_rgba(0,255,255,0.3)] transition-all",
@@ -156,13 +164,9 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
                       {event.title}
                     </h3>
                     {event.subtitle && (
-                      <p className="text-sm text-cyan-300 mb-2 font-medium">
-                        {event.subtitle}
-                      </p>
+                      <p className="text-sm text-cyan-300 mb-2 font-medium">{event.subtitle}</p>
                     )}
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      {event.description}
-                    </p>
+                    <p className="text-sm text-gray-400 leading-relaxed">{event.description}</p>
                   </div>
 
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -186,15 +190,5 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> = ({
     </div>
   );
 };
-
-export interface TimelineEvent {
-  id: string | number;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  year?: string | number;
-  icon?: React.ReactNode;
-  onClick?: () => void;
-}
 
 export default ScrollTimeline;
