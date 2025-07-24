@@ -10,6 +10,8 @@ import { motion } from "framer-motion";
 import Cursor from "@/components/cursor";
 import AnimatedBubbleParticles from "@/app/components/ui/bg";
 import EventsTimeline from "./components/section/eventSection";
+// import { ArrowRight } from "lucide-react";
+import ProjectsSection from "@/app/components/section/ProjectsSection";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,6 +38,7 @@ export default function RootLayout({
           <Hero />
           <AboutUs />
           <EventsTimeline />
+          <ProjectsSection />
           <Footer />
           {children}
         </motion.div>
