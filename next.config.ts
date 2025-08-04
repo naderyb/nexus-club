@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
+  images: {
+    domains: ['nexus-admin-bay.vercel.app', 'avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
+  },
+  
   async rewrites() {
     return [
       {
