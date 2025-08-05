@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 
@@ -102,14 +101,6 @@ export default function ProjectsSection() {
                 onClick={() => setSelectedProject(project)}
                 className="group bg-[#111] rounded-2xl overflow-hidden border border-gray-800 hover:border-fuchsia-600 shadow-md hover:shadow-fuchsia-500/30 transition-all cursor-pointer"
               >
-                <div className="relative h-52 w-full overflow-hidden">
-                  <Image
-                    src={`https://nexus-admin-bay.vercel.app/${project.image_url}`}
-                    alt={project.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
                 <div className="p-5 space-y-2">
                   <h3 className="text-xl font-semibold text-white">
                     {project.name}
@@ -149,15 +140,6 @@ export default function ProjectsSection() {
               <h3 className="text-2xl font-bold mb-4">
                 {selectedProject.name}
               </h3>
-
-              <div className="relative w-full h-64 mb-4 rounded-lg overflow-hidden">
-                <Image
-                  src={`https://nexus-admin-bay.vercel.app/${selectedProject.image_url}`}
-                  alt={selectedProject.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
 
               <p className="mb-4 text-gray-300">
                 {selectedProject.description}
