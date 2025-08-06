@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, {
@@ -21,13 +20,31 @@ interface Bubble {
 interface Props {
   className?: string;
   children?: ReactNode;
+  backgroundColor?: string;
+  particleColor?: string;
+  particleSize?: number;
+  spawnInterval?: number;
+  enableGooEffect?: boolean;
+  blurStrength?: number;
+  height?: string;
+  width?: string;
 }
 
 let bubbleId = 0;
 
-const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
+const AnimatedBubbleParticles: React.FC<Props> = ({
+  className,
+  children,
+  backgroundColor = "black",
+  particleColor = "#14b8a6",
+  particleSize = 20,
+  spawnInterval = 600,
+  enableGooEffect = false,
+  blurStrength = 0,
+  height = "100%",
+  width = "100%",
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // Removed unused bubbles state
   const mouse = useRef({ x: 0, y: 0 });
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
@@ -37,8 +54,8 @@ const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
 
       const container = containerRef.current.getBoundingClientRect();
       const size = isMobile
-        ? Math.random() * 10 + 8
-        : Math.random() * 20 + 10;
+        ? Math.random() * (particleSize * 0.4) + particleSize * 0.8
+        : Math.random() * (particleSize * 0.5) + particleSize;
 
       const x = nearMouse
         ? mouse.current.x - container.left + (Math.random() * 40 - 20)
@@ -61,10 +78,14 @@ const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
       bubble.element.style.height = bubble.size + "px";
       bubble.element.style.left = bubble.x + "px";
       bubble.element.style.top = bubble.y + "px";
-      bubble.element.style.background = "radial-gradient(circle, #0ff4, #0ff2)";
+      bubble.element.style.background = `radial-gradient(circle, ${particleColor}44, ${particleColor}22)`;
       bubble.element.style.opacity = String(bubble.opacity);
       bubble.element.style.transition =
         "opacity 4s ease-out, transform 6s ease-out";
+
+      if (enableGooEffect) {
+        bubble.element.style.filter = `blur(${blurStrength}px)`;
+      }
 
       containerRef.current.appendChild(bubble.element);
 
@@ -77,14 +98,14 @@ const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
         bubble.element.remove();
       }, 5000);
     },
-    [isMobile]
+    [isMobile, particleSize, particleColor, enableGooEffect, blurStrength]
   );
 
   const handleClick = useCallback((e: MouseEvent) => {
-    const pulse = document.createElement("div");
     if (!containerRef.current) return;
-
     const container = containerRef.current.getBoundingClientRect();
+
+    const pulse = document.createElement("div");
     pulse.className = "absolute rounded-full pointer-events-none border border-cyan-400";
     pulse.style.left = e.clientX - container.left - 30 + "px";
     pulse.style.top = e.clientY - container.top - 30 + "px";
@@ -105,9 +126,9 @@ const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => createBubble(false), isMobile ? 1200 : 600);
+    const interval = setInterval(() => createBubble(false), spawnInterval);
     return () => clearInterval(interval);
-  }, [createBubble, isMobile]);
+  }, [createBubble, spawnInterval]);
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -127,7 +148,9 @@ const AnimatedBubbleParticles: React.FC<Props> = ({ className, children }) => {
       ref={containerRef}
       className={cn("relative overflow-hidden", className)}
       style={{
-        background: "black",
+        background: backgroundColor,
+        height,
+        width,
         zIndex: 1,
       }}
     >
