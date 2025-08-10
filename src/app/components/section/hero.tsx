@@ -7,9 +7,18 @@ import { ArrowRight, Sparkles, Zap } from "lucide-react";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   const { scrollYProgress } = useScroll();
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const rotateX = useTransform(scrollYProgress, [0, 1], [0, 10]);
+
+  // Check for mobile on component mount
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Optimized mouse tracking with throttling
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -52,10 +61,10 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 text-white overflow-hidden">
-      {/* Enhanced Background Effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Floating Geometric Shapes */}
-        {[...Array(8)].map((_, i) => (
+      {/* SLOT 1 — Enhanced Background Effects with Mobile Overflow Control */}
+      <div className="absolute inset-0 pointer-events-none max-w-full max-h-full overflow-hidden">
+        {/* SLOT 7 — Floating Geometric Shapes with Reduced Density on Mobile */}
+        {[...Array(isMobile ? 4 : 8)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 rounded-full border border-cyan-400/60"
@@ -80,7 +89,7 @@ export default function Hero() {
         {/* Enhanced Dynamic Gradient Orb */}
         <motion.div
           style={{ y: parallaxY, rotateX }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] md:w-[1000px] h-[600px] sm:h-[800px] md:h-[1000px] pointer-events-none"
         >
           <motion.div
             animate={{
@@ -114,7 +123,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl">
-        {/* Logo with Enhanced Animation */}
+        {/* SLOT 2 — Logo with Enhanced Animation and Responsive Scaling */}
         <motion.div
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="relative mb-8"
@@ -124,14 +133,14 @@ export default function Hero() {
             alt="Nexus Club Logo"
             width={200}
             height={65}
-            className="mx-auto filter drop-shadow-lg"
+            className="mx-auto filter drop-shadow-lg w-40 sm:w-48 md:w-[200px]"
             priority
           />
         </motion.div>
 
-        {/* Enhanced Title */}
+        {/* SLOT 3 — Enhanced Title with Mobile Font Scaling */}
         <motion.h1
-          className="relative mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none"
+          className="relative mb-6 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none"
           style={titleStyle}
         >
           Build. Break. Belong.
@@ -169,7 +178,7 @@ export default function Hero() {
               ease: "easeInOut",
             }}
           >
-            <Zap className="w-6 h-6 md:w-8 md:h-8" />
+            <Zap className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />
           </motion.div>
           <motion.div
             className="absolute -top-5 -right-4 text-fuchsia-400"
@@ -185,14 +194,14 @@ export default function Hero() {
               delay: 1,
             }}
           >
-            <Sparkles className="w-6 h-6 md:w-8 md:h-8" />
+            <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />
           </motion.div>
         </motion.h1>
 
-        {/* Enhanced Tagline */}
+        {/* SLOT 4 — Enhanced Tagline with Mobile Padding */}
         <motion.div {...fadeInUp(0.4)} className="mb-6">
           <div className="w-32 h-0.5 bg-gradient-to-r from-cyan-400 to-fuchsia-400 mx-auto mb-4 opacity-60" />
-          <p className="text-lg md:text-xl font-light tracking-wide">
+          <p className="text-base sm:text-lg md:text-xl font-light tracking-wide px-2 sm:px-0">
             A creative tech collective for{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent font-medium">
               developers
@@ -212,7 +221,7 @@ export default function Hero() {
         {/* Enhanced Subtitle */}
         <motion.p
           {...fadeInUp(0.6)}
-          className="mb-8 max-w-2xl mx-auto text-gray-200 text-base md:text-lg leading-relaxed font-light"
+          className="mb-8 max-w-2xl mx-auto text-gray-200 text-sm sm:text-base md:text-lg leading-relaxed font-light px-2 sm:px-0"
         >
           Where <span className="text-cyan-300 font-medium">innovation</span>{" "}
           meets <span className="text-fuchsia-300 font-medium">community</span>.
@@ -221,10 +230,10 @@ export default function Hero() {
           <span className="text-white font-medium">shape tomorrow</span>.
         </motion.p>
 
-        {/* Enhanced CTA Button */}
+        {/* SLOT 5 — Enhanced CTA Button with Mobile Full Width */}
         <motion.div
           {...fadeInUp(0.8)}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto"
         >
           <motion.button
             whileHover={{
@@ -234,7 +243,7 @@ export default function Hero() {
             }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group relative inline-flex items-center gap-3 rounded-full border-2 border-cyan-400/60 px-6 py-3 text-base font-semibold uppercase tracking-widest text-cyan-300 overflow-hidden transition-all duration-500 hover:text-white hover:border-cyan-400"
+            className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-3 rounded-full border-2 border-cyan-400/60 px-6 py-3 text-base font-semibold uppercase tracking-widest text-cyan-300 overflow-hidden transition-all duration-500 hover:text-white hover:border-cyan-400"
           >
             {/* Button Background Effect */}
             <span className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -246,12 +255,12 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        {/* Scroll Indicator */}
+        {/* SLOT 6 — Scroll Indicator with Fixed Centering */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 1 }}
-          className="absolute bottom-5 left-1 -translate-x-1/2"
+          className="absolute bottom-5 left-1/2 -translate-x-1/2"
         >
           <motion.div
             animate={{ y: [0, 8, 0] }}
