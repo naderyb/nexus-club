@@ -4,12 +4,12 @@ import { FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="relative w-full top-1110 py-12 px-6  text-white flex flex-col items-center text-center z-50 overflow-hidden">
+    <footer className="relative w-full top-10 py-12 px-6  text-white flex flex-col items-center text-center z-50 overflow-hidden">
       {/* Logo */}
       <Image
         src="/logo-nexus.png"
         alt="Nexus Club Logo"
-        width={220}
+        width={520}
         height={80}
         className="drop-shadow-[0_0_15px_#8a2be2]"
       />
