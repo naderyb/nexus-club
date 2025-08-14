@@ -1,6 +1,7 @@
-// components/EventCard.tsx
-import React, { memo } from "react";
-import { motion } from "framer-motion";
+"use client";
+
+import React, { memo, useState, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Event {
   id: number;
@@ -16,36 +17,88 @@ interface EventCardProps {
   event: Event;
 }
 
+// Optimized animation variants
+const cardVariants = {
+  rest: { y: 0, scale: 1 },
+  hover: { 
+    y: -8, 
+    scale: 1.02,
+    transition: { type: "spring" as const, stiffness: 300, damping: 20 }
+  }
+};
+
+const descriptionVariants = {
+  hidden: { 
+    opacity: 0, 
+    height: 0, 
+    marginTop: 0,
+    transition: { duration: 0.2, ease: "easeInOut" as const }
+  },
+  visible: { 
+    opacity: 1, 
+    height: "auto", 
+    marginTop: 16,
+    transition: { duration: 0.3, ease: "easeOut" as const }
+  }
+};
+
+const buttonVariants = {
+  rest: { scale: 1 },
+  hover: { scale: 1.05, transition: { type: "spring" as const, stiffness: 400 } },
+  tap: { scale: 0.95 }
+};
+
 const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
-  const formattedDate = new Date(event.date).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const [showDescription, setShowDescription] = useState(false);
+
+  // Memoize formatted date to prevent recalculation
+  const formattedDate = useMemo(() => {
+    return new Date(event.date).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }, [event.date]);
+
+  // Optimized toggle handler with useCallback
+  const toggleDescription = useCallback(() => {
+    setShowDescription(prev => !prev);
+  }, []);
+
+  // Memoize description content
+  const descriptionContent = useMemo(() => (
+    event.description?.trim() || "No description provided."
+  ), [event.description]);
 
   return (
-    <motion.div
+    <motion.article
       className="relative bg-black/20 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl group will-change-transform"
-      whileHover={{ 
-        y: -4, // Reduced movement
-        transition: { type: "spring", stiffness: 400, damping: 25 }
-      }}
-      layout={false} // Disable layout animations for better performance
+      variants={cardVariants}
+      initial="rest"
+      whileHover="hover"
+      role="article"
+      aria-labelledby={`event-title-${event.id}`}
     >
-      {/* Static Gradient Border Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+      {/* Optimized gradient overlay */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+        aria-hidden="true"
+      />
 
       {/* Content Section */}
       <div className="p-6 relative z-10">
-        {/* Title */}
-        <h3 className="text-xl font-bold text-white mb-4 line-clamp-2 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-fuchsia-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+        {/* Enhanced Title */}
+        <h3 
+          id={`event-title-${event.id}`}
+          className="text-xl font-bold text-white mb-4 line-clamp-2 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:via-blue-400 group-hover:to-fuchsia-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500"
+        >
           {event.title}
         </h3>
 
         {/* Date and Location */}
         <div className="space-y-3 mb-4">
-          <div className="flex items-center text-sm text-gray-300">
-            <div className="w-4 h-4 mr-3 flex-shrink-0 text-cyan-400">
+          <div className="flex items-center text-sm">
+            <div className="w-4 h-4 mr-3 flex-shrink-0 text-cyan-400" aria-hidden="true">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -55,11 +108,16 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
                 />
               </svg>
             </div>
-            <span className="font-medium text-white">{formattedDate}</span>
+            <time 
+              className="font-medium text-white"
+              dateTime={event.date}
+            >
+              {formattedDate}
+            </time>
           </div>
 
-          <div className="flex items-center text-sm text-gray-300">
-            <div className="w-4 h-4 mr-3 flex-shrink-0 text-fuchsia-400">
+          <div className="flex items-center text-sm">
+            <div className="w-4 h-4 mr-3 flex-shrink-0 text-fuchsia-400" aria-hidden="true">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -75,56 +133,94 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
                 />
               </svg>
             </div>
-            <span className="text-white">{event.location}</span>
+            <address className="text-white not-italic">
+              {event.location}
+            </address>
           </div>
         </div>
 
-        {/* Description */}
-        <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-4 group-hover:text-gray-200 transition-colors duration-300">
-          {event.description}
-        </p>
-
-        {/* Bottom Section */}
+        {/* Enhanced Show Description Button */}
         <div className="pt-3 border-t border-white/10">
-          <div className="flex items-center justify-between">
-
-            <motion.button
-              className="flex items-center space-x-2 text-xs font-medium bg-gradient-to-r from-cyan-600 to-fuchsia-600 text-white px-3 py-1.5 rounded-full hover:from-cyan-500 hover:to-fuchsia-500 transition-all duration-300 shadow-lg"
-              whileHover={{ 
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 400, damping: 25 }
+          <motion.button
+            onClick={toggleDescription}
+            variants={buttonVariants}
+            initial="rest"
+            whileHover="hover"
+            whileTap="tap"
+            className="group/btn relative overflow-hidden flex items-center space-x-2 text-xs font-semibold bg-gradient-to-r from-cyan-600 via-blue-600 to-fuchsia-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
+            aria-expanded={showDescription}
+            aria-controls={`event-description-${event.id}`}
+            aria-label={showDescription ? "Hide event description" : "Show event description"}
+          >
+            {/* Button background glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-fuchsia-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-full blur-sm" />
+            
+            {/* Button content */}
+            <span className="relative z-10">
+              {showDescription ? "Hide Details" : "Show Details"}
+            </span>
+            
+            {/* Enhanced arrow icon */}
+            <motion.div
+              className="relative z-10 w-3 h-3"
+              animate={{
+                rotate: showDescription ? 90 : 0,
               }}
-              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <span>View Details</span>
-              <motion.svg
-                className="w-3 h-3"
+              <svg
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                whileHover={{ 
-                  x: 1,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
-                }}
+                className="w-full h-full"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M9 5l7 7-7 7"
                 />
-              </motion.svg>
-            </motion.button>
-          </div>
+              </svg>
+            </motion.div>
+          </motion.button>
         </div>
 
-        {/* Subtle Inner Glow - Static version for better performance */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-cyan-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
+        {/* Optimized Description Reveal */}
+        <AnimatePresence mode="wait">
+          {showDescription && (
+            <motion.div
+              key={`description-${event.id}`}
+              id={`event-description-${event.id}`}
+              variants={descriptionVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="overflow-hidden"
+              role="region"
+              aria-live="polite"
+            >
+              <div className="p-4 bg-gradient-to-br from-slate-800/40 via-slate-700/30 to-slate-800/40 rounded-xl border border-white/10 shadow-inner backdrop-blur-sm">
+                <h4 className="text-sm font-semibold bg-gradient-to-r from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent mb-3">
+                  Event Details
+                </h4>
+                <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line break-words">
+                  {descriptionContent}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Enhanced subtle glow effect */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-cyan-500/2 via-transparent to-fuchsia-500/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" 
+          aria-hidden="true"
+        />
       </div>
-    </motion.div>
+    </motion.article>
   );
 });
 
-EventCard.displayName = 'EventCard';
+EventCard.displayName = "EventCard";
 
 export default EventCard;
