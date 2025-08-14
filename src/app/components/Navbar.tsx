@@ -37,7 +37,6 @@ const socialLinks = [
   },
 ];
 
-
 export default function Navbar() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -53,16 +52,60 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent body scroll when sidebar is open
+  // 🚀 Enhanced body scroll and blur effect when sidebar is open
   useEffect(() => {
+    const body = document.body;
+    const mainContent =
+      document.getElementById("main-content") || document.querySelector("main");
+
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      // Prevent body scroll
+      body.style.overflow = "hidden";
+
+      // Add blur effect to main content
+      if (mainContent) {
+        mainContent.style.filter = "blur(8px)";
+        mainContent.style.transition = "filter 0.3s ease-in-out";
+      }
+
+      // Add blur class to other elements (optional)
+      const elementsToBlur = document.querySelectorAll(
+        "section, article, .page-content"
+      );
+      elementsToBlur.forEach((element) => {
+        (element as HTMLElement).style.filter = "blur(8px)";
+        (element as HTMLElement).style.transition = "filter 0.3s ease-in-out";
+      });
     } else {
-      document.body.style.overflow = "unset";
+      // Restore body scroll
+      body.style.overflow = "unset";
+
+      // Remove blur effect from main content
+      if (mainContent) {
+        mainContent.style.filter = "none";
+      }
+
+      // Remove blur from other elements
+      const elementsToBlur = document.querySelectorAll(
+        "section, article, .page-content"
+      );
+      elementsToBlur.forEach((element) => {
+        (element as HTMLElement).style.filter = "none";
+      });
     }
 
+    // Cleanup function
     return () => {
-      document.body.style.overflow = "unset";
+      body.style.overflow = "unset";
+      if (mainContent) {
+        mainContent.style.filter = "none";
+      }
+      const elementsToBlur = document.querySelectorAll(
+        "section, article, .page-content"
+      );
+      elementsToBlur.forEach((element) => {
+        (element as HTMLElement).style.filter = "none";
+      });
     };
   }, [isOpen]);
 
@@ -113,14 +156,13 @@ export default function Navbar() {
           <Link href="/" className="flex items-center group">
             <div className="relative">
               <Image
-                src="/logo-nexus.png"
+                src="/logo-nexus.svg"
                 alt="Nexus Club Logo"
-                width={160}
+                width={120}
                 height={40}
                 className="rounded-lg object-contain transition-transform duration-300 group-hover:scale-105"
                 priority
               />
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-fuchsia-500/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
             </div>
           </Link>
 
@@ -183,15 +225,26 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* Backdrop */}
+      {/* 🚀 Enhanced Backdrop with stronger blur effect */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{
+              opacity: 1,
+              backdropFilter: "blur(12px)",
+              transition: { duration: 0.4, ease: "easeOut" },
+            }}
+            exit={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+              transition: { duration: 0.3, ease: "easeIn" },
+            }}
+            className="fixed inset-0 bg-black/70 z-40 md:hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(20,20,40,0.9) 50%, rgba(0,0,0,0.8) 100%)",
+            }}
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -201,30 +254,84 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.aside
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
+            initial={{ x: "100%" }}
+            animate={{
+              x: 0,
+              transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.4,
+              },
+            }}
+            exit={{
+              x: "100%",
+              transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 35,
+                duration: 0.3,
+              },
+            }}
             className="fixed top-0 right-0 w-[85%] max-w-sm h-screen bg-gradient-to-b from-[#0f0f1e] via-[#1a1a2e] to-[#16213e] z-50 shadow-2xl border-l border-gradient-to-b border-fuchsia-500/30"
+            style={{
+              backdropFilter: "blur(20px)",
+              boxShadow:
+                "0 0 50px rgba(192, 38, 211, 0.3), 0 0 100px rgba(0, 255, 255, 0.2)",
+            }}
           >
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-32 h-32 bg-cyan-400/10 rounded-full blur-3xl" />
+              <motion.div
+                className="absolute -top-20 -right-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="absolute -bottom-20 -left-20 w-32 h-32 bg-cyan-400/10 rounded-full blur-3xl"
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.2, 0.5, 0.2],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
             </div>
 
             <div className="relative flex flex-col h-full px-6 py-6">
               {/* Header with close button */}
               <div className="flex justify-between items-center mb-8">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-400 to-cyan-300 bg-clip-text text-transparent">
+                <motion.h2
+                  className="text-xl font-bold bg-gradient-to-r from-fuchsia-400 to-cyan-300 bg-clip-text text-transparent"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
                   Menu
-                </h2>
-                <button
+                </motion.h2>
+                <motion.button
                   className="p-2 rounded-full bg-fuchsia-500/20 text-fuchsia-400 hover:bg-fuchsia-500/30 hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
                   onClick={() => setIsOpen(false)}
                   aria-label="Close menu"
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
                   <HiX size={24} />
-                </button>
+                </motion.button>
               </div>
 
               {/* Navigation Links */}
@@ -253,31 +360,56 @@ export default function Navbar() {
               </nav>
 
               {/* Social Icons */}
-              <div className="pt-6 border-t border-fuchsia-400/20">
+              <motion.div
+                className="pt-6 border-t border-fuchsia-400/20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
                 <p className="text-sm text-gray-400 text-center mb-4 font-medium">
                   Connect with us
                 </p>
                 <div className="flex justify-center space-x-6">
-                  {socialLinks.map(({ icon: Icon, href, label, color }) => (
-                    <motion.a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`p-3 rounded-full bg-gradient-to-r from-fuchsia-600/20 to-cyan-500/20 text-gray-300 ${color} transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-fuchsia-500/25 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50`}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      aria-label={`Visit our ${label}`}
-                    >
-                      <Icon size={20} />
-                    </motion.a>
-                  ))}
+                  {socialLinks.map(
+                    ({ icon: Icon, href, label, color }, index) => (
+                      <motion.a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`p-3 rounded-full bg-gradient-to-r from-fuchsia-600/20 to-cyan-500/20 text-gray-300 ${color} transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-fuchsia-500/25 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50`}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        aria-label={`Visit our ${label}`}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.9 + index * 0.1 }}
+                      >
+                        <Icon size={20} />
+                      </motion.a>
+                    )
+                  )}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.aside>
         )}
       </AnimatePresence>
+
+      {/* 🚀 Global styles for blur effect */}
+      <style jsx global>{`
+        .navbar-blur-active main,
+        .navbar-blur-active section,
+        .navbar-blur-active article,
+        .navbar-blur-active .page-content {
+          filter: blur(8px);
+          transition: filter 0.3s ease-in-out;
+        }
+
+        .navbar-blur-active .navbar {
+          filter: none !important;
+        }
+      `}</style>
     </>
   );
 }
