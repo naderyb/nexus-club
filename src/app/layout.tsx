@@ -11,6 +11,7 @@ import Footer from "../app/components/Footer";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
 import "./globals.css";
+import Cursor from "./components/ui/cursor";
 
 // Dynamically load ClubHierarchy without SSR to avoid DOM-related errors
 const ClubHierarchy = dynamic(() => import("./components/section/ClubHierarchy"), {
@@ -62,6 +63,7 @@ export default function RootLayout({
           transition={{ duration: 1 }}
           className="relative z-10"
         >
+          <Cursor />
           <Navbar />
           <Hero />
           <AboutUs />
