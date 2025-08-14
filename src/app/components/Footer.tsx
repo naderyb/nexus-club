@@ -4,12 +4,12 @@ import { FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="relative w-full top-10 py-12 px-6  text-white flex flex-col items-center text-center z-50 overflow-hidden">
+    <footer className="relative w-full top-10 py-12 px-6 text-white flex flex-col items-center text-center z-10 overflow-hidden">
       {/* Logo */}
       <Image
-        src="/logo-nexus.png"
+        src="/logo-nexus.svg"
         alt="Nexus Club Logo"
-        width={520}
+        width={220}
         height={80}
         className="drop-shadow-[0_0_15px_#8a2be2]"
       />
@@ -21,9 +21,9 @@ export default function Footer() {
 
       {/* Bold Club Identity */}
       <p className="max-w-2xl text-gray-300 text-sm md:text-base mt-6 leading-relaxed px-4 font-light tracking-wide">
-        Nexus Club is more than just a club - it’s a community. Created by
-        students for students. We’re based in Algiers, but our ideas break
-        borders. If it’s futuristic, wild, and meaningful - it’s Nexus.
+        Nexus Club is more than just a club - it&apos;s a community. Created by
+        students for students. We&apos;re based in Algiers, but our ideas break
+        borders. If it&apos;s futuristic, wild, and meaningful - it&apos;s Nexus.
       </p>
 
       {/* Location */}
@@ -37,7 +37,7 @@ export default function Footer() {
           href="https://tiktok.com/@nexus.club_"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff]"
+          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff] transition-all duration-300"
         >
           <FaTiktok size={24} />
         </a>
@@ -45,7 +45,7 @@ export default function Footer() {
           href="https://instagram.com/nexus.club_"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff]"
+          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff] transition-all duration-300"
         >
           <FaInstagram size={24} />
         </a>
@@ -53,7 +53,7 @@ export default function Footer() {
           href="https://www.linkedin.com/in/nexus-club-692baa334/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff]"
+          className="hover:text-white hover:drop-shadow-[0_0_6px_#ffffff] transition-all duration-300"
         >
           <FaLinkedin size={24} />
         </a>
