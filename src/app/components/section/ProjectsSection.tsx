@@ -16,12 +16,16 @@ type Project = {
   end_date?: string;
 };
 
-// 5️⃣ Animation constants
+// 5️⃣ Animation constants - Fixed ease property
 const fadeInUp = (delay = 0) => ({
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 1, delay, ease: "easeOut" },
+  transition: { 
+    duration: 1, 
+    delay, 
+    ease: [0.25, 0.46, 0.45, 0.94] as const
+  },
 });
 
 // 3️⃣ Loading skeleton component
@@ -240,7 +244,10 @@ export default function ProjectsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ 
+                  delay: index * 0.1,
+                  ease: [0.25, 0.46, 0.45, 0.94] as const
+                }}
                 whileHover={{ scale: isMobile ? 1.02 : 1.03 }}
                 onClick={() => setSelectedProject(project)}
                   className={`group bg-[#111] rounded-2xl overflow-hidden border border-gray-800 hover:border-fuchsia-600 shadow-md hover:shadow-fuchsia-500/30 transition-all cursor-pointer ${
