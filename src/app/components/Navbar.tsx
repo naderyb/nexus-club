@@ -52,7 +52,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🚀 Enhanced body scroll and blur effect when sidebar is open
+  // Enhanced body scroll and blur effect when sidebar is open
   useEffect(() => {
     const body = document.body;
     const mainContent =
@@ -225,7 +225,7 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* 🚀 Enhanced Backdrop with stronger blur effect */}
+      {/* Enhanced Backdrop with stronger blur effect */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -396,7 +396,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* 🚀 Global styles for blur effect */}
+      {/* Global styles for blur effect */}
       <style jsx global>{`
         .navbar-blur-active main,
         .navbar-blur-active section,
