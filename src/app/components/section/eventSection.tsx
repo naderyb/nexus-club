@@ -20,7 +20,7 @@ interface GroupedEvents {
   events: Event[];
 }
 
-// 1️⃣ Mobile-first animation variants
+// Mobile-first animation variants
 const fadeInUp = (delay = 0, y = 30, duration = 0.8) => ({
   initial: { opacity: 0, y, scale: 0.98 },
   whileInView: { opacity: 1, y: 0, scale: 1 },
@@ -32,7 +32,7 @@ const fadeInUp = (delay = 0, y = 30, duration = 0.8) => ({
   },
 });
 
-// 2️⃣ Responsive loading skeleton
+// Responsive loading skeleton
 const LoadingSkeleton = memo(({ isMobile }: { isMobile: boolean }) => (
   <div className="space-y-8 sm:space-y-12">
     {[1, 2, 3].map((index) => (
@@ -65,7 +65,7 @@ const LoadingSkeleton = memo(({ isMobile }: { isMobile: boolean }) => (
 
 LoadingSkeleton.displayName = "LoadingSkeleton";
 
-// 3️⃣ Enhanced empty state
+// Enhanced empty state
 const EmptyState = memo(() => (
   <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
@@ -139,7 +139,7 @@ const EventsTimeline: React.FC = () => {
     [0, isMobile ? -20 : -50]
   );
 
-  // 4️⃣ Mobile detection
+  // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 640;
@@ -151,7 +151,7 @@ const EventsTimeline: React.FC = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 5️⃣ Touch-friendly mouse tracking
+  // Touch-friendly mouse tracking
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if ("ontouchstart" in window) return; // Skip on touch devices
     requestAnimationFrame(() => {
@@ -165,7 +165,7 @@ const EventsTimeline: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
-  // 6️⃣ Mobile-optimized title style
+  // Mobile-optimized title style
   const titleStyle = useMemo(() => {
     const baseStyle = {
       background:
@@ -224,7 +224,7 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
 
   return (
     <section className="relative min-h-screen px-4 sm:px-6 py-8 sm:py-16 md:py-24 text-white overflow-hidden">
-      {/* 7️⃣ Mobile-optimized background effects */}
+      {/* Mobile-optimized background effects */}
       <div className="absolute inset-0 pointer-events-none max-w-full max-h-full overflow-hidden">
         {/* Simplified gradient for mobile */}
         <div className="absolute inset-0 opacity-5">
@@ -258,7 +258,7 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
 
       {/* Content Container */}
       <div className="relative z-10 max-w-6xl mx-auto">
-        {/* 8️⃣ Mobile-first section header */}
+        {/* Mobile-first section header */}
         <motion.div
           {...fadeInUp(0)}
           className="text-center mb-8 sm:mb-12 md:mb-16"
@@ -322,7 +322,7 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
         ) : events.length === 0 ? (
           <EmptyState />
         ) : (
-          /* 9️⃣ Mobile-optimized timeline */
+          /* Mobile-optimized timeline */
           <div className="relative">
             {/* Responsive center line */}
             <motion.div
