@@ -1,0 +1,79 @@
+<!-- filepath: c:\Users\MSI Katana\Desktop\nexus-club\public\nexus-banner.svg -->
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a14;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Text Gradient -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bgGradient)"/>
+  
+  <!-- Floating Particles -->
+  <circle cx="100" cy="80" r="2" fill="#00ffff" opacity="0.6">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1100" cy="320" r="1.5" fill="#8b5cf6" opacity="0.8">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="200" cy="350" r="1" fill="#ec4899" opacity="0.7">
+    <animate attributeName="opacity" values="0.2;0.9;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main Title -->
+  <text x="600" y="150" 
+        font-family="Inter, sans-serif" 
+        font-size="72" 
+        font-weight="800" 
+        text-anchor="middle" 
+        fill="url(#textGradient)"
+        filter="url(#glow)">
+    NEXUS CLUB
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="210" 
+        font-family="Inter, sans-serif" 
+        font-size="28" 
+        font-weight="400" 
+        text-anchor="middle" 
+        fill="#00ffff"
+        opacity="0.9">
+    We Make Sense From Chaos
+  </text>
+  
+  <!-- Location -->
+  <text x="600" y="260" 
+        font-family="Inter, sans-serif" 
+        font-size="18" 
+        font-weight="300" 
+        text-anchor="middle" 
+        fill="#8b5cf6"
+        opacity="0.8">
+    IFAG Higher Institute • Algiers, Algeria
+  </text>
+  
+  <!-- Decorative Lines -->
+  <line x1="300" y1="280" x2="900" y2="280" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+  <line x1="400" y1="120" x2="800" y2="120" stroke="#ec4899" stroke-width="1" opacity="0.3"/>
+</svg>
