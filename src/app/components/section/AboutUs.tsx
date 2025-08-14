@@ -39,7 +39,7 @@ function AboutSection() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 4️⃣ Touch-friendly parallax toggle
+  // Touch-friendly parallax toggle
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if ("ontouchstart" in window) return; // Skip on mobile/touch devices
     requestAnimationFrame(() => {
@@ -53,7 +53,7 @@ function AboutSection() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
-  // 6️⃣ Orientation detection with caching
+  // Orientation detection with caching
   const getCachedOrientation = useCallback(
     (src: string): "portrait" | "landscape" | null => {
       try {
@@ -171,7 +171,7 @@ function AboutSection() {
     prepareItems();
   }, [getImageOrientation]);
 
-  // 1️⃣ Mobile-first carousel configuration
+  // Mobile-first carousel configuration
   const carouselConfig = useMemo(
     () => ({
       cardWidth: isMobile ? 250 : 300,
@@ -195,7 +195,7 @@ function AboutSection() {
     [mousePosition]
   );
 
-  // 3️⃣ Loading skeleton component
+  // Loading skeleton component
   const LoadingSkeleton = () => (
     <div className="flex gap-4 justify-center px-4 sm:px-0">
       {[...Array(carouselConfig.visibleCards)].map((_, i) => (
