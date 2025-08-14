@@ -96,8 +96,8 @@ export default function ProjectsSection() {
     };
 
     // Skip complex shadows on mobile
-    if (isMobile || "ontouchstart" in window) {
-      return {
+// Replace line 178 with:
+if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {      return {
         ...baseStyle,
         textShadow: "2px 2px 8px rgba(34, 211, 238, 0.3)",
       };
