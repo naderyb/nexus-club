@@ -175,8 +175,8 @@ const EventsTimeline: React.FC = () => {
     };
 
     // Skip complex shadows on mobile for better performance
-    if (isMobile || "ontouchstart" in window) {
-      return {
+// Replace line 178 with:
+if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {      return {
         ...baseStyle,
         filter: "drop-shadow(2px 2px 8px rgba(34, 211, 238, 0.2))",
       };
