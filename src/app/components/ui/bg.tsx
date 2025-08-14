@@ -1,13 +1,13 @@
 // src/app/components/ui/Cursor.tsx
 "use client";
 import React from "react";
-import AnimatedBubbleParticles from "../../../components/AnimatedBubbleParticles"; // or adjust import path
+import AnimatedBubbleParticles from "../../../components/AnimatedBubbleParticles"; 
 
-const Cursor = () => {
+const bg = () => {
   return (
     <AnimatedBubbleParticles
       backgroundColor="black"
-      particleColor="#14b8a6" // Tailwind's teal-500
+      particleColor="#14b8a6" 
       particleSize={25}
       spawnInterval={160}
       enableGooEffect={true}
@@ -19,4 +19,4 @@ const Cursor = () => {
   );
 };
 
-export default Cursor;
+export default bg;
