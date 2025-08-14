@@ -129,9 +129,9 @@ export default function Hero() {
           className="relative mb-8"
         >
           <Image
-            src="/logo-nexus.png"
+            src="/logo-nexus.svg"
             alt="Nexus Club Logo"
-            width={200}
+            width={100}
             height={65}
             className="mx-auto filter drop-shadow-lg w-40 sm:w-48 md:w-[200px]"
             priority
