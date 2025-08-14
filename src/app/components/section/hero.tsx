@@ -61,9 +61,9 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 text-white overflow-hidden">
-      {/* SLOT 1 — Enhanced Background Effects with Mobile Overflow Control */}
+      {/* Enhanced Background Effects with Mobile Overflow Control */}
       <div className="absolute inset-0 pointer-events-none max-w-full max-h-full overflow-hidden">
-        {/* SLOT 7 — Floating Geometric Shapes with Reduced Density on Mobile */}
+        {/* Floating Geometric Shapes with Reduced Density on Mobile */}
         {[...Array(isMobile ? 4 : 8)].map((_, i) => (
           <motion.div
             key={i}
@@ -123,7 +123,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl">
-        {/* SLOT 2 — Logo with Enhanced Animation and Responsive Scaling */}
+        {/* Logo with Enhanced Animation and Responsive Scaling */}
         <motion.div
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="relative mb-8"
@@ -138,7 +138,7 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* SLOT 3 — Enhanced Title with Mobile Font Scaling */}
+        {/* Enhanced Title with Mobile Font Scaling */}
         <motion.h1
           className="relative mb-6 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none"
           style={titleStyle}
@@ -198,7 +198,7 @@ export default function Hero() {
           </motion.div>
         </motion.h1>
 
-        {/* SLOT 4 — Enhanced Tagline with Mobile Padding */}
+        {/* Enhanced Tagline with Mobile Padding */}
         <motion.div {...fadeInUp(0.4)} className="mb-6">
           <div className="w-32 h-0.5 bg-gradient-to-r from-cyan-400 to-fuchsia-400 mx-auto mb-4 opacity-60" />
           <p className="text-base sm:text-lg md:text-xl font-light tracking-wide px-2 sm:px-0">
@@ -255,7 +255,7 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        {/* SLOT 6 — Scroll Indicator with Fixed Centering */}
+        {/* Scroll Indicator with Fixed Centering */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
