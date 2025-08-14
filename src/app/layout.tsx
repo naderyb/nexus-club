@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import Navbar from "../app/components/Navbar";
 import Hero from "@/app/components/section/hero";
 import AboutUs from "@/app/components/section/AboutUs";
@@ -14,9 +14,9 @@ import "./globals.css";
 import Cursor from "./components/ui/cursor";
 
 // Dynamically load ClubHierarchy without SSR to avoid DOM-related errors
-const ClubHierarchy = dynamic(() => import("./components/section/ClubHierarchy"), {
-  ssr: false,
-});
+// const ClubHierarchy = dynamic(() => import("./components/section/ClubHierarchy"), {
+//   ssr: false,
+// });
 
 const inter = Inter({
   subsets: ["latin"],
@@ -69,7 +69,7 @@ export default function RootLayout({
           <AboutUs />
           <EventsTimeline />
           <ProjectsSection />
-          <ClubHierarchy />
+          {/* <ClubHierarchy /> */}
           <Footer />
           {children}
         </motion.div>
