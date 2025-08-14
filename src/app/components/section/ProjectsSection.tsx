@@ -16,7 +16,7 @@ type Project = {
   end_date?: string;
 };
 
-// 5️⃣ Animation constants - Fixed ease property
+// Animation constants - Fixed ease property
 const fadeInUp = (delay = 0) => ({
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
@@ -28,7 +28,7 @@ const fadeInUp = (delay = 0) => ({
   },
 });
 
-// 3️⃣ Loading skeleton component
+// Loading skeleton component
 const LoadingSkeleton = ({ isMobile }: { isMobile: boolean }) => (
   <div
     className={`${
@@ -75,7 +75,7 @@ export default function ProjectsSection() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 4️⃣ Mouse shadow optimization - skip on mobile
+  // Mouse shadow optimization - skip on mobile
   const handleMouseMove = useCallback((event: MouseEvent) => {
     if ("ontouchstart" in window) return; // Skip on mobile/touch devices
     setMousePosition({ x: event.clientX, y: event.clientY });
@@ -229,7 +229,7 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
         ) : projects.length === 0 ? (
           <EmptyState />
         ) : (
-          /* 2️⃣ Responsive layout - grid on desktop, horizontal scroll on mobile */
+          /* Responsive layout - grid on desktop, horizontal scroll on mobile */
           <motion.div
             {...fadeInUp(0.3)}
             className={`${
@@ -254,21 +254,8 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
                     isMobile ? "min-w-[280px] flex-shrink-0" : ""
                   }`}
                 >
-                  {/* 6️⃣ Project image */}
-                  {project.image_url && (
-                    <div className="relative h-32 sm:h-40 overflow-hidden">
-                      <Image
-                        src={project.image_url}
-                        alt={project.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 640px) 280px, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#111]/60 to-transparent" />
-                    </div>
-                  )}
 
-                {/* 1️⃣ Mobile-first card content */}
+                {/* Mobile-first card content */}
                 <div className="p-4 sm:p-5 space-y-2">
                   <h3 className="text-lg sm:text-xl font-semibold text-white line-clamp-2">
                     {project.name}
@@ -290,7 +277,7 @@ if (isMobile || (typeof window !== "undefined" && "ontouchstart" in window)) {  
         )}
       </div>
 
-      {/* 7️⃣ Responsive Modal with scroll */}
+      {/* Responsive Modal with scroll */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
