@@ -27,7 +27,6 @@ pnpm-debug.log*
 /.svelte-kit
 # Gatsby files
 /.cache
-/public
 # VuePress build output
 /.vuepress/dist
 # Serverless directories
