@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-black text-white relative overflow-x-hidden`}>
         {/* Floating Cyan Background Particles */}
         <div className="absolute inset-0 pointer-events-none">
-          {[...Array(200)].map((_, i) => (
+          {[...Array(260)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute w-1 h-1 bg-cyan-400/40 rounded-full"
