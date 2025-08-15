@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
-import Image from "next/image";
+
 
 type Project = {
   id: number;
@@ -136,29 +136,7 @@ const ProjectCard = ({
     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-3xl" />
 
     {/* Project image with enhanced effects */}
-    <div className="relative h-36 overflow-hidden rounded-t-3xl">
-      {project.image_url ? (
-        <>
-          <Image
-            src={project.image_url}
-            alt={project.name}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-            sizes={
-              isMobile
-                ? "280px"
-                : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            }
-          />
-          {/* Image overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        </>
-      ) : (
-        <div className="w-full h-full bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 flex items-center justify-center">
-          <div className="text-4xl opacity-30">🚀</div>
-        </div>
-      )}
+    <div className="relative h-10 overflow-hidden rounded-t-3xl">
 
       {/* Floating badge */}
       <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs font-medium text-cyan-400 border border-cyan-400/30">
@@ -469,24 +447,6 @@ export default function ProjectsSection() {
 
               {/* Modal content */}
               <div className="space-y-6">
-                {/* Image */}
-                {selectedProject.image_url && (
-                  <motion.div
-                    className="relative h-64 md:h-80 rounded-2xl overflow-hidden"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <Image
-                      src={selectedProject.image_url}
-                      alt={selectedProject.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 896px"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent" />
-                  </motion.div>
-                )}
 
                 {/* Title and content */}
                 <motion.div
