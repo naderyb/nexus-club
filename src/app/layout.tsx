@@ -1,17 +1,16 @@
 "use client";
 
 import React from "react";
-// import dynamic from "next/dynamic";
-import Navbar from "../app/components/Navbar";
+import Cursor from "@/app/components/ui/cursor";
+import Navbar from "@/app/components/Navbar";
 import Hero from "@/app/components/section/hero";
 import AboutUs from "@/app/components/section/AboutUs";
-import EventsTimeline from "./components/section/eventSection";
+import EventsTimeline from "@/app/components/section/eventSection";
 import ProjectsSection from "@/app/components/section/ProjectsSection";
-import Footer from "../app/components/Footer";
+import Footer from "@/app/components/Footer";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
 import "./globals.css";
-import Cursor from "./components/ui/cursor";
 
 // Dynamically load ClubHierarchy without SSR to avoid DOM-related errors
 // const ClubHierarchy = dynamic(() => import("./components/section/ClubHierarchy"), {
@@ -30,6 +29,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
+      <head>
+        <title>Nexus Club</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/logo-nexus.svg" />
+        <link rel="apple-touch-icon" href="/logo-nexus.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+      </head>
       <body className={`${inter.className} bg-black text-white relative overflow-x-hidden`}>
         {/* Floating Cyan Background Particles */}
         <div className="absolute inset-0 pointer-events-none">
