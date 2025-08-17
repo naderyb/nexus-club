@@ -2,7 +2,6 @@
 
 import React from "react";
 import Cursor from "@/app/components/ui/cursor";
-import Navbar from "@/app/components/Navbar";
 import Hero from "@/app/components/section/hero";
 import AboutUs from "@/app/components/section/AboutUs";
 import EventsTimeline from "@/app/components/section/eventSection";
@@ -70,7 +69,6 @@ export default function RootLayout({
           className="relative z-10"
         >
           <Cursor />
-          <Navbar />
           <Hero />
           <AboutUs />
           <EventsTimeline />
