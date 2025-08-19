@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "pg";
 
-// 🚀 Database connection setup
+// Database connection setup
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -13,7 +13,10 @@ const pool = new Pool({
 interface NewbieRequest {
   nom: string;
   prenom: string;
-  email: string; // 🚀 Add email
+  num?: string | null;
+  email: string;
+  instagram?: string | null;
+  discord?: string | null;
   classe: string;
   hobbies?: string | null;
   motivation: string;
@@ -24,15 +27,15 @@ export async function POST(request: NextRequest) {
   let client;
 
   try {
-    console.log("🚀 API Route called - /api/newbies");
+    console.log("API Route called - /api/newbies");
 
     // Get database client
     client = await pool.connect();
-    console.log("🔗 Database connected successfully");
+    console.log("Database connected successfully");
 
     // Parse the request body
     const body: NewbieRequest = await request.json();
-    console.log("📝 Received data:", body);
+    console.log("Received data:", body);
 
     // Basic validation
     if (
@@ -42,7 +45,7 @@ export async function POST(request: NextRequest) {
       !body.classe ||
       !body.motivation
     ) {
-      console.log("❌ Validation failed - missing required fields");
+      console.log("Validation failed - missing required fields");
       return NextResponse.json(
         { error: "Tous les champs obligatoires doivent être remplis" },
         { status: 400 }
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest) {
     // Add email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(body.email)) {
-      console.log("❌ Invalid email format:", body.email);
+      console.log("Invalid email format:", body.email);
       return NextResponse.json(
         { error: "Format d'email invalide" },
         { status: 400 }
@@ -63,7 +66,10 @@ export async function POST(request: NextRequest) {
     const cleanData = {
       nom: body.nom.trim(),
       prenom: body.prenom.trim(),
-      email: body.email.trim().toLowerCase(), // 🚀 Add email (lowercase)
+      num: body.num?.trim() || null,
+      email: body.email.trim().toLowerCase(),
+      instagram: body.instagram?.trim() || null,
+      discord: body.discord?.trim() || null,
       classe: body.classe,
       hobbies: body.hobbies?.trim() || null,
       motivation: body.motivation.trim(),
@@ -71,45 +77,61 @@ export async function POST(request: NextRequest) {
     };
 
     // Validate classe
-    const validClasses = ["1CP", "2CP", "1CS", "2CS", "3CS"];
+    const validClasses = [
+      "LAC1",
+      "LAC2",
+      "LAC3",
+      "LMI1",
+      "LMI2",
+      "LMI3",
+      "LFC1",
+      "LFC2",
+    ];
     if (!validClasses.includes(cleanData.classe)) {
-      console.log("❌ Invalid classe:", cleanData.classe);
+      console.log("Invalid classe:", cleanData.classe);
       return NextResponse.json({ error: "Classe non valide" }, { status: 400 });
     }
 
-    console.log("✅ Data validation passed:", cleanData);
+    console.log("Data validation passed:", cleanData);
 
-    // 🚀 Insert into database
+    // Insert into database
     const insertQuery = `
       INSERT INTO newbies (
         nom, 
-        prenom, 
-        email, 
+        prenom,
+        num,
+        email,
+        instagram,
+        discord,
         classe, 
         hobbies, 
         motivation, 
         additional_notes, 
         created_at, 
         status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), 'pending')
-      RETURNING id, nom, prenom, email, classe, created_at, status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), 'pending')
+      RETURNING id, nom, prenom, num, email, instagram, discord, classe, created_at, status
     `;
 
     const values = [
-      cleanData.nom,
-      cleanData.prenom,
-      cleanData.email, // 🚀 Add email value
-      cleanData.classe,
-      cleanData.hobbies,
-      cleanData.motivation,
-      cleanData.additional_notes,
+      cleanData.nom, // $1
+      cleanData.prenom, // $2
+      cleanData.num, // $3
+      cleanData.email, // $4
+      cleanData.instagram, // $5
+      cleanData.discord, // $6
+      cleanData.classe, // $7
+      cleanData.hobbies, // $8
+      cleanData.motivation, // $9
+      cleanData.additional_notes, // $10
+      // Note: created_at uses NOW() and status uses 'pending' directly in query
     ];
 
-    console.log("🔄 Executing database query...");
+    console.log("Executing database query...");
     const result = await client.query(insertQuery, values);
     const newNewbie = result.rows[0];
 
-    console.log("✅ Newbie inserted successfully:", newNewbie);
+    console.log("Newbie inserted successfully:", newNewbie);
 
     return NextResponse.json(
       {
@@ -118,7 +140,10 @@ export async function POST(request: NextRequest) {
           id: newNewbie.id,
           nom: newNewbie.nom,
           prenom: newNewbie.prenom,
+          num: newNewbie.num,
           email: newNewbie.email,
+          instagram: newNewbie.instagram,
+          discord: newNewbie.discord,
           classe: newNewbie.classe,
           status: newNewbie.status,
           created_at: newNewbie.created_at,
@@ -127,7 +152,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("❌ Full error details:", error);
+    console.error("Full error details:", error);
 
     // Handle specific database errors
     if (error && typeof error === "object" && "code" in error) {
@@ -141,7 +166,7 @@ export async function POST(request: NextRequest) {
 
       if (error.code === "42P01") {
         // Table doesn't exist
-        console.error("❌ Table 'newbies' doesn't exist in database");
+        console.error("Table 'newbies' doesn't exist in database");
         return NextResponse.json(
           { error: "Erreur de configuration de base de données" },
           { status: 500 }
@@ -150,7 +175,7 @@ export async function POST(request: NextRequest) {
 
       if (error.code === "42703") {
         // Column doesn't exist
-        console.error("❌ Column doesn't exist in table");
+        console.error("Column doesn't exist in table");
         return NextResponse.json(
           { error: "Erreur de structure de base de données" },
           { status: 500 }
@@ -174,7 +199,7 @@ export async function POST(request: NextRequest) {
       typeof error.message === "string" &&
       error.message.includes("connect")
     ) {
-      console.error("❌ Database connection failed");
+      console.error("Database connection failed");
       return NextResponse.json(
         { error: "Erreur de connexion à la base de données" },
         { status: 503 }
@@ -189,7 +214,7 @@ export async function POST(request: NextRequest) {
     // Always release the client
     if (client) {
       client.release();
-      console.log("🔌 Database client released");
+      console.log("Database client released");
     }
   }
 }
