@@ -2,28 +2,32 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "nexus-admin-bay.vercel.app",
-      "avatars.githubusercontent.com",
-      "lh3.googleusercontent.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com", // For Cloudinary images
+      },
+      {
+        protocol: "https",
+        hostname: "nexus-admin-bay.vercel.app", // Your admin panel domain
+      },
+      {
+        protocol: "http",
+        hostname: "localhost", // For local development
+        port: "3001", // Your API port
+      },
     ],
-  },
-
-  typescript: {
-    // ✅ Allow production builds even if there are type errors
-    ignoreBuildErrors: true,
-  },
-
-  eslint: {
-    // ✅ Skip ESLint checks during build
-    ignoreDuringBuilds: true,
   },
 
   async rewrites() {
     return [
       {
         source: "/api/:path*",
-        destination: "https://nexus-admin-bay.vercel.app/api/:path*", // proxy to your backend
+        destination: "https://nexus-admin-bay.vercel.app/api/:path*",
       },
     ];
   },
