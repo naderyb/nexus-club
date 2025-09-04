@@ -708,8 +708,6 @@ export default function ProjectsSection() {
         },
       });
 
-      console.log("📦 Raw API Response:", response.data);
-
       let projectsData: Project[] = [];
 
       // Handle different API response formats
@@ -726,8 +724,6 @@ export default function ProjectsSection() {
         console.error("❌ Unexpected API response format:", response.data);
         throw new Error("Invalid API response format");
       }
-
-      console.log(`✅ Successfully fetched ${projectsData.length} projects`);
 
       // Log each project for debugging
       projectsData.forEach((project, index) => {
@@ -787,13 +783,6 @@ export default function ProjectsSection() {
 
   return (
     <section className="relative py-24 min-h-screen overflow-hidden">
-      {/* Optimized Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-purple-900/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,119,198,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(120,219,255,0.2),transparent_50%)]" />
-      </div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
@@ -827,7 +816,6 @@ export default function ProjectsSection() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Where cutting-edge technology meets creative problem-solving.
             Explore our portfolio of innovative solutions that push boundaries
             and create impact.
           </motion.p>
