@@ -2,6 +2,7 @@
 
 import React, { memo, useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface Event {
   id: number;
@@ -9,8 +10,7 @@ interface Event {
   description: string;
   location: string;
   date: string;
-  image_url?: string;
-  video_url?: string;
+  media?: string[];
 }
 
 interface EventCardProps {
@@ -20,36 +20,63 @@ interface EventCardProps {
 // Optimized animation variants
 const cardVariants = {
   rest: { y: 0, scale: 1 },
-  hover: { 
-    y: -8, 
+  hover: {
+    y: -8,
     scale: 1.02,
-    transition: { type: "spring" as const, stiffness: 300, damping: 20 }
-  }
+    transition: { type: "spring" as const, stiffness: 300, damping: 20 },
+  },
 };
 
 const descriptionVariants = {
-  hidden: { 
-    opacity: 0, 
-    height: 0, 
+  hidden: {
+    opacity: 0,
+    height: 0,
     marginTop: 0,
-    transition: { duration: 0.2, ease: "easeInOut" as const }
+    transition: { duration: 0.2, ease: "easeInOut" as const },
   },
-  visible: { 
-    opacity: 1, 
-    height: "auto", 
+  visible: {
+    opacity: 1,
+    height: "auto",
     marginTop: 16,
-    transition: { duration: 0.3, ease: "easeOut" as const }
-  }
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
 };
 
 const buttonVariants = {
   rest: { scale: 1 },
-  hover: { scale: 1.05, transition: { type: "spring" as const, stiffness: 400 } },
-  tap: { scale: 0.95 }
+  hover: {
+    scale: 1.05,
+    transition: { type: "spring" as const, stiffness: 400 },
+  },
+  tap: { scale: 0.95 },
+};
+
+// 🚀 New media grid variants
+const mediaVariants = {
+  hidden: {
+    opacity: 0,
+    y: 10,
+    transition: { duration: 0.2 },
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, staggerChildren: 0.1 },
+  },
+};
+
+const mediaItemVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring" as const, stiffness: 300, damping: 25 },
+  },
 };
 
 const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
   const [showDescription, setShowDescription] = useState(false);
+  const [showMedia, setShowMedia] = useState(false);
 
   // Memoize formatted date to prevent recalculation
   const formattedDate = useMemo(() => {
@@ -60,15 +87,37 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
     });
   }, [event.date]);
 
-  // Optimized toggle handler with useCallback
+  // Optimized toggle handlers with useCallback
   const toggleDescription = useCallback(() => {
-    setShowDescription(prev => !prev);
+    setShowDescription((prev) => !prev);
+  }, []);
+
+  const toggleMedia = useCallback(() => {
+    setShowMedia((prev) => !prev);
   }, []);
 
   // Memoize description content
-  const descriptionContent = useMemo(() => (
-    event.description?.trim() || "No description provided."
-  ), [event.description]);
+  const descriptionContent = useMemo(
+    () => event.description?.trim() || "No description provided.",
+    [event.description]
+  );
+
+  // 🚀 Memoize media content and check if media exists
+  const hasMedia = useMemo(
+    () => event.media && event.media.length > 0,
+    [event.media]
+  );
+
+  const mediaCount = useMemo(() => event.media?.length || 0, [event.media]);
+
+  // 🚀 Helper function to determine if URL is video
+  const isVideoUrl = useCallback((url: string) => {
+    return (
+      url.includes("/video/") ||
+      url.match(/\.(mp4|webm|ogg|mov|avi)(\?|$)/i) ||
+      url.includes("video")
+    );
+  }, []);
 
   return (
     <motion.article
@@ -80,7 +129,7 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
       aria-labelledby={`event-title-${event.id}`}
     >
       {/* Optimized gradient overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
         aria-hidden="true"
       />
@@ -88,7 +137,7 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
       {/* Content Section */}
       <div className="p-6 relative z-10">
         {/* Enhanced Title */}
-        <h3 
+        <h3
           id={`event-title-${event.id}`}
           className="text-xl font-bold text-white mb-4 line-clamp-2 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:via-blue-400 group-hover:to-fuchsia-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500"
         >
@@ -98,7 +147,10 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
         {/* Date and Location */}
         <div className="space-y-3 mb-4">
           <div className="flex items-center text-sm">
-            <div className="w-4 h-4 mr-3 flex-shrink-0 text-cyan-400" aria-hidden="true">
+            <div
+              className="w-4 h-4 mr-3 flex-shrink-0 text-cyan-400"
+              aria-hidden="true"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -108,16 +160,16 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
                 />
               </svg>
             </div>
-            <time 
-              className="font-medium text-white"
-              dateTime={event.date}
-            >
+            <time className="font-medium text-white" dateTime={event.date}>
               {formattedDate}
             </time>
           </div>
 
           <div className="flex items-center text-sm">
-            <div className="w-4 h-4 mr-3 flex-shrink-0 text-fuchsia-400" aria-hidden="true">
+            <div
+              className="w-4 h-4 mr-3 flex-shrink-0 text-fuchsia-400"
+              aria-hidden="true"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -139,27 +191,32 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
           </div>
         </div>
 
-        {/* Enhanced Show Description Button */}
-        <div className="pt-3 border-t border-white/10">
+        {/* Action Buttons */}
+        <div className="pt-3 border-t border-white/10 space-y-3">
+          {/* Show Description Button */}
           <motion.button
             onClick={toggleDescription}
             variants={buttonVariants}
             initial="rest"
             whileHover="hover"
             whileTap="tap"
-            className="group/btn relative overflow-hidden flex items-center space-x-2 text-xs font-semibold bg-gradient-to-r from-cyan-600 via-blue-600 to-fuchsia-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
+            className="group/btn relative overflow-hidden flex items-center space-x-2 text-xs font-semibold bg-gradient-to-r from-cyan-600 via-blue-600 to-fuchsia-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 w-full justify-center"
             aria-expanded={showDescription}
             aria-controls={`event-description-${event.id}`}
-            aria-label={showDescription ? "Hide event description" : "Show event description"}
+            aria-label={
+              showDescription
+                ? "Hide event description"
+                : "Show event description"
+            }
           >
             {/* Button background glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-fuchsia-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-full blur-sm" />
-            
+
             {/* Button content */}
             <span className="relative z-10">
               {showDescription ? "Hide Details" : "Show Details"}
             </span>
-            
+
             {/* Enhanced arrow icon */}
             <motion.div
               className="relative z-10 w-3 h-3"
@@ -183,6 +240,64 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
               </svg>
             </motion.div>
           </motion.button>
+
+          {/* 🚀 Show Media Button (only if media exists) */}
+          {hasMedia && (
+            <motion.button
+              onClick={toggleMedia}
+              variants={buttonVariants}
+              initial="rest"
+              whileHover="hover"
+              whileTap="tap"
+              className="group/btn relative overflow-hidden flex items-center space-x-2 text-xs font-semibold bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 w-full justify-center"
+              aria-expanded={showMedia}
+              aria-controls={`event-media-${event.id}`}
+              aria-label={showMedia ? "Hide event media" : "Show event media"}
+            >
+              {/* Button background glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-full blur-sm" />
+
+              {/* Media icon */}
+              <div className="relative z-10 w-3 h-3">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+
+              {/* Button content */}
+              <span className="relative z-10">
+                {showMedia ? "Hide Media" : `View Media (${mediaCount})`}
+              </span>
+
+              {/* Enhanced arrow icon */}
+              <motion.div
+                className="relative z-10 w-3 h-3"
+                animate={{
+                  rotate: showMedia ? 90 : 0,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  className="w-full h-full"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </motion.div>
+            </motion.button>
+          )}
         </div>
 
         {/* Optimized Description Reveal */}
@@ -211,9 +326,132 @@ const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
           )}
         </AnimatePresence>
 
+        {/* 🚀 Enhanced Media Reveal */}
+        <AnimatePresence mode="wait">
+          {showMedia && hasMedia && (
+            <motion.div
+              key={`media-${event.id}`}
+              id={`event-media-${event.id}`}
+              variants={mediaVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="overflow-hidden"
+              role="region"
+              aria-live="polite"
+            >
+              <div className="p-4 bg-gradient-to-br from-slate-800/40 via-slate-700/30 to-slate-800/40 rounded-xl border border-white/10 shadow-inner backdrop-blur-sm">
+                <h4 className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Event Media ({mediaCount})
+                </h4>
+
+                {/* 🚀 Media Grid */}
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                  variants={mediaVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {event.media?.map((url, i) => (
+                    <motion.div
+                      key={i}
+                      variants={mediaItemVariants}
+                      className="relative group/media overflow-hidden rounded-lg bg-slate-900/50 border border-white/10"
+                    >
+                      {isVideoUrl(url) ? (
+                        <video
+                          src={url}
+                          controls
+                          className="w-full h-auto max-h-48 object-cover rounded-lg transition-transform duration-300 group-hover/media:scale-105"
+                          poster="/api/placeholder/400/300"
+                          preload="metadata"
+                          aria-label={`${event.title} video ${i + 1}`}
+                        />
+                      ) : (
+                        <div className="relative overflow-hidden rounded-lg">
+                          <Image
+                            src={url}
+                            alt={`${event.title} media ${i + 1}`}
+                            width={400}
+                            height={300}
+                            className="w-full h-auto max-h-48 object-cover transition-transform duration-300 group-hover/media:scale-105"
+                            loading="lazy"
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkbHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyydlPvRQOz2bTU6C9NN1vB0"
+                          />
+
+                          {/* Image overlay on hover */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover/media:opacity-100 transition-opacity duration-300 rounded-lg" />
+
+                          {/* Image index indicator */}
+                          <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                            {i + 1}/{mediaCount}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Media type indicator */}
+                      <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        {isVideoUrl(url) ? (
+                          <>
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            Video
+                          </>
+                        ) : (
+                          <>
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            Image
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Enhanced subtle glow effect */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-t from-cyan-500/2 via-transparent to-fuchsia-500/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" 
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-cyan-500/2 via-transparent to-fuchsia-500/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
           aria-hidden="true"
         />
       </div>
