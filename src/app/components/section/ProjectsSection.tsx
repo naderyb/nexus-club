@@ -14,7 +14,7 @@ interface Project {
   media: string[];
   start_date?: string;
   end_date?: string;
-  status?: "Live" | "Completed" | "In Progress" | "Archived";
+  status?: "Completed" | "In Progress" | "Archived";
   technologies?: string[];
   category?: string;
   featured?: boolean;
@@ -63,12 +63,6 @@ const formatUtils = {
 // 🎯 Enhanced Status Logic
 const getProjectStatus = (project: Project): ProjectStatus => {
   const statusMap: Record<string, ProjectStatus> = {
-    Live: {
-      text: "Live",
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-500/20 border-emerald-500/40",
-      icon: "🚀",
-    },
     Completed: {
       text: "Completed",
       color: "text-blue-400",
@@ -93,7 +87,6 @@ const getProjectStatus = (project: Project): ProjectStatus => {
     return statusMap[project.status];
   }
 
-  if (project.site_url) return statusMap.Live;
   if (project.end_date) return statusMap.Completed;
   return statusMap["In Progress"];
 };
@@ -299,8 +292,6 @@ const ProjectCard = ({
   onSelect: (project: Project) => void;
 }) => {
   const status = getProjectStatus(project);
-  const images = mediaUtils.getImages(project.media);
-  const primaryImage = images[0];
 
   return (
     <motion.article
@@ -340,50 +331,7 @@ const ProjectCard = ({
         </div>
       )}
 
-      {/* Image Section */}
-      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
-        {primaryImage ? (
-          <>
-            <Image
-              src={primaryImage}
-              alt={project.name}
-              fill
-              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1"
-              sizes="400px"
-              priority={index < 2}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-6xl opacity-30 mb-2">🚀</div>
-              <p className="text-gray-500 text-sm">No preview available</p>
-            </div>
-          </div>
-        )}
-
-        {/* Media Count Indicator */}
-        {project.media?.length > 1 && (
-          <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/70 backdrop-blur-sm text-cyan-300 text-xs font-medium rounded-full border border-cyan-500/30">
-            📸 {project.media.length} items
-          </div>
-        )}
-
-        {/* Year Badge */}
-        {project.start_date && (
-          <div className="absolute top-3 right-3 px-2 py-1 bg-black/70 backdrop-blur-sm text-cyan-400 text-xs font-medium rounded-full border border-cyan-500/30">
-            {formatUtils.formatDate(project.start_date)}
-          </div>
-        )}
-
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-          <div className="text-white text-sm font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            Click to explore →
-          </div>
-        </div>
-      </div>
+      
 
       {/* Content Section */}
       <div className="p-6 space-y-4">
