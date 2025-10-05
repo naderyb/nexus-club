@@ -78,14 +78,14 @@ export async function POST(request: NextRequest) {
 
     // Validate classe
     const validClasses = [
-      "LAC1",
+      "LMK1",
       "LAC2",
       "LAC3",
       "LMI1",
       "LMI2",
       "LMI3",
-      "LFC1",
-      "LFC2",
+      "LCF1",
+      "LCF2",
     ];
     if (!validClasses.includes(cleanData.classe)) {
       console.log("Invalid classe:", cleanData.classe);
