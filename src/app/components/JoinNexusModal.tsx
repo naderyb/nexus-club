@@ -42,7 +42,7 @@ const initialFormState = {
 
 const classeOptions = [
   { value: "", label: "Choisir ta classe *" },
-  { value: "LAC1", label: "LAC1" },
+  { value: "LMK1", label: "LMK1" },
   { value: "LAC2", label: "LAC2" },
   { value: "LAC3", label: "LAC3" },
   { value: "LMI1", label: "LMI1" },
