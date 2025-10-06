@@ -124,7 +124,6 @@ export async function POST(request: NextRequest) {
       cleanData.hobbies, // $8
       cleanData.motivation, // $9
       cleanData.additional_notes, // $10
-      // Note: created_at uses NOW() and status uses 'pending' directly in query
     ];
 
     console.log("Executing database query...");
